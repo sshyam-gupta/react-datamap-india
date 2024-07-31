@@ -1,37 +1,39 @@
-import React from 'react'
-import * as d3Scale from 'd3-scale'
-import * as d3Interpolate from 'd3-interpolate'
+// src/components/MapElements/index.tsx
 
-import Title from './Title'
-import DataMap from './DataMap'
-import MapLegend from './MapLegend'
-import { RegionData, MapLayout } from '../../index'
+import React, { useState, useEffect } from 'react';
+import * as d3Scale from 'd3-scale';
+import * as d3Interpolate from 'd3-interpolate';
+import Title from './Title';
+import DataMap from './DataMap';
+import MapLegend from './MapLegend';
+import { RegionData, MapLayout } from '../../index';
 
-const DEFAULT_WIDTH = 400
+const DEFAULT_WIDTH = 400;
 
 interface MapElementsProps {
-  mouseMoveOnDatamap(data: any): void
-  mouseEnterOnDatamap(): void
-  mouseLeaveDatamap(): void
-  mouseEnterOnState(name: string, value: number): void
-  regionData: RegionData
+  mouseClickOnState(state: any): void;
+  mouseMoveOnDatamap(data: any): void;
+  mouseEnterOnDatamap(): void;
+  mouseLeaveDatamap(): void;
+  mouseEnterOnState(name: string, value: number): void;
+  regionData: RegionData;
   extremeValues: {
-    min: number
-    max: number
-  }
-  mapLayout: MapLayout
-  topoData: any[]
+    min: number;
+    max: number;
+  };
+  mapLayout: MapLayout;
+  topoData: any[];
   infoWindowPos: {
-    x: number
-    y: number
-  }
+    x: number;
+    y: number;
+  };
 }
 
 const MapElements = (props: MapElementsProps) => {
-  const svgWidth = DEFAULT_WIDTH
-  const svgHeight = svgWidth
+  const svgWidth = DEFAULT_WIDTH;
+  const svgHeight = svgWidth;
 
-  const { mapLayout, extremeValues, regionData } = props
+  const { mapLayout, extremeValues, regionData } = props;
   const {
     noDataColor,
     borderColor,
@@ -39,24 +41,21 @@ const MapElements = (props: MapElementsProps) => {
     startColor,
     endColor,
     hoverBorderColor,
-  } = mapLayout
-
-  const { min: minValue, max: maxValue } = extremeValues
+  } = mapLayout;
+  const { min: minValue, max: maxValue } = extremeValues;
 
   const svgStyle: React.CSSProperties = {
     display: 'inline-block',
     position: 'absolute',
     top: 0,
     left: 0,
-  }
+  };
 
   const colorScale = d3Scale
     .scaleLinear()
     .domain([minValue, maxValue])
-    // @ts-ignore
     .range([startColor, endColor])
-    // @ts-ignore
-    .interpolate(d3Interpolate.interpolateLab)
+    .interpolate(d3Interpolate.interpolateLab);
 
   const mapLegend = (
     <MapLegend
@@ -65,13 +64,13 @@ const MapElements = (props: MapElementsProps) => {
       extremeValues={extremeValues}
       mapLayout={mapLayout}
     />
-  )
+  );
 
   const isNotExtremeValuesEmpty =
     !isNaN(minValue) &&
     !isNaN(maxValue) &&
     isFinite(minValue) &&
-    isFinite(maxValue)
+    isFinite(maxValue);
 
   return (
     <svg
@@ -85,7 +84,6 @@ const MapElements = (props: MapElementsProps) => {
           className="map-title"
           coords={{ x: 30, y: 40 }}
         />
-
         <DataMap
           topoData={props.topoData}
           regionData={regionData}
@@ -100,19 +98,18 @@ const MapElements = (props: MapElementsProps) => {
           mouseEnterOnDatamap={props.mouseEnterOnDatamap}
           mouseLeaveDatamap={props.mouseLeaveDatamap}
           mouseEnterOnState={props.mouseEnterOnState}
+          mouseClickOnState={props.mouseClickOnState}
         />
-
         <Title
           text={props.mapLayout.legendTitle}
           className="legend-title"
           coords={{ x: svgWidth - 190, y: svgHeight - 35 }}
         />
-
         {isNotExtremeValuesEmpty && mapLegend}
       </g>
     </svg>
-  )
-}
+  );
+};
 
 const arePropsEqual = (
   prevProps: MapElementsProps,
@@ -122,7 +119,7 @@ const arePropsEqual = (
     prevProps.infoWindowPos.x === nextProps.infoWindowPos.x &&
     prevProps.infoWindowPos.y === nextProps.infoWindowPos.y &&
     prevProps.regionData === nextProps.regionData
-  )
-}
+  );
+};
 
-export default React.memo(MapElements, arePropsEqual)
+export default React.memo(MapElements, arePropsEqual);
