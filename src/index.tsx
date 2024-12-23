@@ -5,6 +5,7 @@ import INDIA_JSON from './data/india.json'
 import MapElements from './components/MapElements/index'
 import HoverInfo from './components/HoverInfo'
 import TitleStyle from './components/TitleStyle'
+import StateInfoModal from './components/StateInfoModal'
 
 const TOPO_INDIA_DATA = topojson.feature(
   // @ts-ignore
@@ -39,6 +40,7 @@ interface IDatamapBox {
   regionData: RegionData
   mapLayout: MapLayout
   hoverComponent?: any
+  onClickComponent?: any
 }
 
 const DEFAULT_MAP_LAYOUT = {
@@ -67,6 +69,11 @@ class DatamapBox extends React.Component<IDatamapBox> {
       name: '',
       value: 0,
     },
+    clickedState: {
+      name: '',
+      value: 0,
+    },
+
     regionData: this.props.regionData,
     mapLayout: { ...DEFAULT_MAP_LAYOUT, ...this.props.mapLayout },
   }
@@ -78,6 +85,8 @@ class DatamapBox extends React.Component<IDatamapBox> {
     this.mouseLeaveDatamap = this.mouseLeaveDatamap.bind(this)
     this.mouseEnterOnState = this.mouseEnterOnState.bind(this)
     this.calculateExtremeValues = this.calculateExtremeValues.bind(this)
+    this.handleClickOnState = this.handleClickOnState.bind(this)
+    this.closeModal = this.closeModal.bind(this)
   }
 
   componentDidMount() {
@@ -141,6 +150,24 @@ class DatamapBox extends React.Component<IDatamapBox> {
     })
   }
 
+  handleClickOnState(name: string, value: number) {
+    this.setState({
+      clickedState: {
+        name,
+        value,
+      },
+    })
+  }
+
+  closeModal() {
+    this.setState({
+      clickedState: {
+        name: '',
+        value: 0,
+      },
+    })
+  }
+
   render() {
     return (
       <>
@@ -154,6 +181,7 @@ class DatamapBox extends React.Component<IDatamapBox> {
           mouseLeaveDatamap={this.mouseLeaveDatamap}
           mouseEnterOnState={this.mouseEnterOnState}
           infoWindowPos={this.state.infoWindowPosition}
+          onClickOnState={this.handleClickOnState}
         />
         {this.state.mapLayout.hoverName || this.state.activeState.name ? (
           <HoverInfo
@@ -165,6 +193,15 @@ class DatamapBox extends React.Component<IDatamapBox> {
             hoverComponent={this.props.hoverComponent}
           />
         ) : null}
+
+        {/* Show the modal if a state is clicked */}
+        <StateInfoModal
+          isOpen={!!this.state.clickedState.name}
+          name={this.state.clickedState.name}
+          value={this.state.clickedState.value}
+          onClose={this.closeModal}
+          onClickComponent={this.props.onClickComponent}
+        />
 
         <TitleStyle />
       </>
