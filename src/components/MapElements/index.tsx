@@ -15,6 +15,7 @@ interface MapElementsProps {
   mouseLeaveDatamap(): void
   mouseEnterOnState(name: string, value: number): void
   regionData: RegionData
+  onClickOnState(name: string, value: number): void
   extremeValues: {
     min: number
     max: number
@@ -100,6 +101,7 @@ const MapElements = (props: MapElementsProps) => {
           mouseEnterOnDatamap={props.mouseEnterOnDatamap}
           mouseLeaveDatamap={props.mouseLeaveDatamap}
           mouseEnterOnState={props.mouseEnterOnState}
+          onClickOnState={props.onClickOnState}
         />
 
         <Title
