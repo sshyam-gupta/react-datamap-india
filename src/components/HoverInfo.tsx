@@ -17,8 +17,8 @@ class HoverInfo extends React.Component<HoverInfoProps> {
 
   render() {
     const hoverInfoStyle = {
-      left: this.props.position.x - 50,
-      top: this.props.position.y - (this.refHoverInfo?.offsetHeight ?? 0) - 20,
+      left: this.props.position.x + 20,
+      top: this.props.position.y - (this.refHoverInfo?.offsetHeight ?? 0) + 0,
       display: this.props.active ? 'block' : 'none',
     }
 
