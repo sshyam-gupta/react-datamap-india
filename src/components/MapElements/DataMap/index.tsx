@@ -19,8 +19,8 @@ interface DataMapProps {
   borderColor: string
   hoverColor?: string
   hoverBorderColor?: string
+  onClickOnState(name: string, value: number): void
 }
-
 class DataMap extends React.Component<DataMapProps> {
   state = {
     topoJSONfeatures: this.props.topoData,
@@ -30,6 +30,13 @@ class DataMap extends React.Component<DataMapProps> {
     super(props)
     this.handleMouseEnterOnState = this.handleMouseEnterOnState.bind(this)
     this.renderDatamapStates = this.renderDatamapStates.bind(this)
+    this.handleStateClick = this.handleStateClick.bind(this)
+  }
+
+  handleStateClick(name: string, value: number) {
+    if (this.props.onClickOnState) {
+      this.props.onClickOnState(name, value)
+    }
   }
 
   drawPath = path(this.props.svgWidth, this.props.svgHeight)
@@ -72,6 +79,13 @@ class DataMap extends React.Component<DataMapProps> {
           hoverBorderColor={hoverBorderColor}
           mouseEnterOnState={this.handleMouseEnterOnState}
           value={stateValue}
+          onClick={() =>
+            this.handleStateClick(feature.properties.name, stateValue.value)
+          }
+          // onClick={(name, value) =>
+          //   console.log(`Clicked on state: ${name}, Value: ${value}`)
+
+          // }
         />
       )
     })
